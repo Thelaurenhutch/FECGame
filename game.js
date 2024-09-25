@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 // Sounds (make sure the audio files are in the same directory)
 const jumpSound = new Audio('jump.wav');
 const collisionSound = new Audio('crash.wav');
-const powerUpSound = new Audio('powerrup.wav');
+const powerUpSound = new Audio('powerup.wav');
 
 // Set canvas to iPhone screen dimensions or responsive dimensions
 function resizeCanvas() {
@@ -33,9 +33,17 @@ let score = 0;
 let gameOver = false;
 
 let isGameStarted = false; // Tracks if the game has started
-let obstacleFrequency = 100; // Frequency of obstacle generation
+let obstacleFrequency = 100; // Base frequency of obstacle generation
 let obstacleSpeed = 3; // Speed of obstacles
 let obstacleTimer = 0; // Timer to control obstacle generation
+
+// Define obstacle types
+const obstacleTypes = [
+  { width: 30, height: 30, color: 'black' },
+  { width: 40, height: 20, color: 'blue' },
+  { width: 50, height: 50, color: 'green' },
+  { width: 20, height: 40, color: 'purple' },
+];
 
 // Function to draw the instructions screen
 function drawInstructions() {
@@ -144,24 +152,33 @@ function updatePlayer() {
   ctx.fillRect(player.x, player.y, player.width, player.height);
 }
 
-// Function to generate obstacles
+// Function to generate obstacles with random type and position
 function generateObstacle() {
+  const randomIndex = Math.floor(Math.random() * obstacleTypes.length);
+  const obstacleType = obstacleTypes[randomIndex];
+
   const obstacle = {
     x: canvas.width,
-    y: canvas.height - 80, // Adjust to be on ground level
-    width: 30,
-    height: 30,
-    color: 'black',
+    y: canvas.height - obstacleType.height, // Adjust to be on ground level
+    width: obstacleType.width,
+    height: obstacleType.height,
+    color: obstacleType.color,
   };
+
   obstacles.push(obstacle);
 }
 
 // Function to update obstacles and check for collisions
 function updateObstacles() {
   obstacleTimer++;
+  
+  // Randomize the frequency of obstacle generation
   if (obstacleTimer >= obstacleFrequency) {
     generateObstacle();
     obstacleTimer = 0;
+
+    // Randomize the obstacle frequency (between 50 to 150 frames)
+    obstacleFrequency = Math.floor(Math.random() * 100) + 50; // Random between 50 and 150
   }
 
   // Update and draw obstacles
