@@ -4,7 +4,7 @@ body {
   }
   
   canvas {
-    background-color: lightblue;
+    background-color: rgb(209, 209, 209);
     display: block;
     margin: 20px auto;
     border: 2px solid black;

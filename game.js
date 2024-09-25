@@ -1,7 +1,7 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Sounds (assume the audio files are in the same directory)
+// Sounds (make sure the audio files are in the same directory)
 const jumpSound = new Audio('jump.wav');
 const collisionSound = new Audio('crash.wav');
 const powerUpSound = new Audio('powerrup.wav');
@@ -26,22 +26,16 @@ let player = {
   gravity: 0.5,
   jumpPower: -10,
   isJumping: false,
-  isPoweredUp: false
 };
 
 let obstacles = [];
-let powerUps = [];
 let score = 0;
-let level = 1;
 let gameOver = false;
 
-let obstacleFrequency = 100;
-let obstacleSpeed = 3;
-let powerUpFrequency = 500;
-let powerUpDuration = 5000;
-
 let isGameStarted = false; // Tracks if the game has started
-let frameCount = 0;
+let obstacleFrequency = 100; // Frequency of obstacle generation
+let obstacleSpeed = 3; // Speed of obstacles
+let obstacleTimer = 0; // Timer to control obstacle generation
 
 // Function to draw the instructions screen
 function drawInstructions() {
@@ -73,8 +67,8 @@ function startGame() {
 // Event listeners for both touch and click to start the game
 function startOnInput() {
   if (!isGameStarted) {
-    canvas.removeEventListener('touchstart', startOnInput); // Remove touch listener
-    canvas.removeEventListener('click', startOnInput); // Remove click listener
+    canvas.removeEventListener('touchstart', startOnInput);
+    canvas.removeEventListener('click', startOnInput);
     startGame(); // Start the game when screen is tapped or clicked
   }
 }
@@ -115,9 +109,7 @@ function restartGame() {
   // Reset game variables
   score = 0;
   obstacles = [];
-  powerUps = [];
   gameOver = false;
-  frameCount = 0;
 
   // Remove event listeners for restarting
   canvas.removeEventListener('click', restartGame);
@@ -152,22 +144,71 @@ function updatePlayer() {
   ctx.fillRect(player.x, player.y, player.width, player.height);
 }
 
+// Function to generate obstacles
+function generateObstacle() {
+  const obstacle = {
+    x: canvas.width,
+    y: canvas.height - 80, // Adjust to be on ground level
+    width: 30,
+    height: 30,
+    color: 'black',
+  };
+  obstacles.push(obstacle);
+}
+
+// Function to update obstacles and check for collisions
+function updateObstacles() {
+  obstacleTimer++;
+  if (obstacleTimer >= obstacleFrequency) {
+    generateObstacle();
+    obstacleTimer = 0;
+  }
+
+  // Update and draw obstacles
+  for (let i = 0; i < obstacles.length; i++) {
+    const obstacle = obstacles[i];
+    obstacle.x -= obstacleSpeed; // Move obstacle left
+
+    // Draw the obstacle
+    ctx.fillStyle = obstacle.color;
+    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+    // Check for collisions with the player
+    if (
+      player.x < obstacle.x + obstacle.width &&
+      player.x + player.width > obstacle.x &&
+      player.y < obstacle.y + obstacle.height &&
+      player.y + player.height > obstacle.y
+    ) {
+      gameOver = true; // Collision detected
+      collisionSound.play();
+    }
+
+    // Remove obstacles that are off-screen
+    if (obstacle.x + obstacle.width < 0) {
+      obstacles.splice(i, 1);
+      i--; // Decrement index to account for removed obstacle
+    }
+  }
+}
+
 // Function to update the game (player movement, obstacles, score, etc.)
 function updateGame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
 
   // Update and draw player
   updatePlayer();
+  
+  // Update obstacles
+  updateObstacles();
 
   // Update score
   score += 1;
 
-  // Draw the score
+  // Draw the score at a safe position
   ctx.fillStyle = 'black';
   ctx.font = '20px Arial';
   ctx.fillText(`Score: ${Math.floor(score / 100)}`, 10, 30);
-  
-  // Handle obstacles, power-ups, etc. (this part needs to be implemented)
 }
 
 // Event listeners for player jumping
