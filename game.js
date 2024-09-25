@@ -56,12 +56,12 @@ function drawInstructions() {
   // Display instructions
   ctx.font = '20px Arial';
   ctx.fillText('Instructions:', canvas.width / 2, canvas.height / 2 - 30);
-  ctx.fillText('1. Tap to jump.', canvas.width / 2, canvas.height / 2);
+  ctx.fillText('1. Click or Tap to jump.', canvas.width / 2, canvas.height / 2);
   ctx.fillText('2. Dodge obstacles.', canvas.width / 2, canvas.height / 2 + 30);
   ctx.fillText('3. Collect power-ups.', canvas.width / 2, canvas.height / 2 + 60);
 
-  // Display "Tap to Start"
-  ctx.fillText('Tap to Start', canvas.width / 2, canvas.height / 2 + 150);
+  // Display "Click or Tap to Start"
+  ctx.fillText('Click or Tap to Start', canvas.width / 2, canvas.height / 2 + 150);
 }
 
 // Function to start the game
@@ -73,13 +73,18 @@ function startGame() {
 // Display the instructions screen initially
 drawInstructions();
 
-// Start the game on tap
-canvas.addEventListener('touchstart', function startOnTouch() {
+// Event listeners for both touch and click
+function startOnInput() {
   if (!isGameStarted) {
-    canvas.removeEventListener('touchstart', startOnTouch);
+    canvas.removeEventListener('touchstart', startOnInput); // Remove touch listener
+    canvas.removeEventListener('click', startOnInput); // Remove click listener
     startGame();
   }
-});
+}
+
+// Add both touch and click event listeners
+canvas.addEventListener('touchstart', startOnInput);
+canvas.addEventListener('click', startOnInput);
 
 // Game logic (same as before, including game loop function)
 function gameLoop() {
