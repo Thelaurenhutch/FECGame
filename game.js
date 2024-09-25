@@ -24,7 +24,7 @@ let player = {
   speed: 5,
   dy: 0,
   gravity: 0.5,
-  jumpPower: 5,
+  jumpPower: -15,
   isJumping: false,
 };
 
