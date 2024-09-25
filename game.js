@@ -2,9 +2,9 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 // Sounds (assume the audio files are in the same directory)
-const jumpSound = new Audio('jump.mp3');
-const collisionSound = new Audio('collision.mp3');
-const powerUpSound = new Audio('powerup.mp3');
+const jumpSound = new Audio('jump.wav');
+const collisionSound = new Audio('crash.wav');
+const powerUpSound = new Audio('powerrup.wav');
 
 // Set canvas to iPhone screen dimensions or responsive dimensions
 function resizeCanvas() {
@@ -51,14 +51,14 @@ function drawInstructions() {
   ctx.fillStyle = 'black';
   ctx.font = '30px Arial';
   ctx.textAlign = 'center';
-  ctx.fillText('Platformer Game', canvas.width / 2, canvas.height / 3);
+  ctx.fillText('RAD: The Game', canvas.width / 2, canvas.height / 3);
 
   // Display instructions
   ctx.font = '20px Arial';
   ctx.fillText('Instructions:', canvas.width / 2, canvas.height / 2 - 30);
   ctx.fillText('1. Click or Tap to jump.', canvas.width / 2, canvas.height / 2);
-  ctx.fillText('2. Dodge obstacles.', canvas.width / 2, canvas.height / 2 + 30);
-  ctx.fillText('3. Collect power-ups.', canvas.width / 2, canvas.height / 2 + 60);
+  ctx.fillText('2. Dodge Referrals.', canvas.width / 2, canvas.height / 2 + 30);
+  ctx.fillText('3. Collect your Pay.', canvas.width / 2, canvas.height / 2 + 60);
 
   // Display "Click or Tap to Start"
   ctx.fillText('Click or Tap to Start', canvas.width / 2, canvas.height / 2 + 150);
